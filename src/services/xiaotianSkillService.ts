@@ -1,4 +1,5 @@
 import { glmService } from './glmService';
+import { noteRetrievalService } from './noteRetrievalService';
 
 interface Message {
   role: 'system' | 'user' | 'assistant';
@@ -6,13 +7,13 @@ interface Message {
 }
 
 export class XiaotianSkillService {
-  private systemPrompt: string;
+  private baseSystemPrompt: string;
 
   constructor() {
-    this.systemPrompt = this.buildSystemPrompt();
+    this.baseSystemPrompt = this.buildBaseSystemPrompt();
   }
 
-  private buildSystemPrompt(): string {
+  private buildBaseSystemPrompt(): string {
     const personalInfo = `
 # 刘小天 (Xiaotian Liu / Lio)
 
@@ -73,45 +74,7 @@ export class XiaotianSkillService {
 - 英语流利(IELTS 6.0, CET-6)
 `;
 
-    const learningNotes = `
-## 小红书学习笔记知识库（100天 AI 产品经理）
-
-我进行了系统性的 AI 产品经理学习，累计42篇笔记，以下是我的核心知识储备：
-
-### RAG 系列（检索增强生成）
-- **Naive RAG基础架构** (Day42): 理解RAG的核心三阶段 - 索引(离线准备)、检索(在线匹配)、生成(智能输出)。解决企业问答机器人的三大痛点：实时性、私有化数据、幻觉问题。
-- **RAG应用场景**: 基于Dify构建企业级RAG Pipeline的实际经验（蔚来项目），覆盖90%场景，替代人工70%。
-
-### Prompt 工程（提示词工程）
-- **13种 Prompt 基本技巧** (Day39): 系统梳理提示词工程的核心方法论，从 Few-shot 到 CoT 的实战进化路径。
-- **Prompt 实战经验**: 在蔚来RAG项目中设计调优每个环节的Prompt，构建检索评估、生成评估、端到端评估体系。
-
-### Agent 与智能体
-- **AI智能体的上下文工程** (Day41): 理解AI Agent的"内存管理"艺术，构建动态组装恰当上下文的系统。
-- **Agent 技术栈**: 熟悉Agent开发，包括任务分发、槽位澄清、意图识别等机制。
-
-### NLP 与大语言模型
-- **Transformer架构流程拆解** (Day31): 深度理解Encoder-Decoder机制与注意力机制的底层逻辑。
-- **大语言模型基础**: 理解LLM的工作原理、参数知识vs检索知识、上下文窗口管理。
-
-### 机器学习与深度学习
-- **决策树与随机森林** (Day19): ML基础模型，理解分类问题的核心方法。
-- **数据驱动思维**: IoT背景+Python/SQL，擅长从数据中找最优解。
-
-### 产品经理通识
-- **产品与用户需求洞察** (Day2): 从海量用户反馈中提炼真需求，拒绝伪命题。
-- **AI产品经理能力模型**: 技术背景+产品Sense，理解AI边界并能与算法工程师高效沟通。
-
-### Python 编程基础
-- **面向对象编程** (Day13): 为AI开发构建坚实的工程底座。
-- **数据结构与算法**: 支持AI原型快速开发。
-
-### AI 应用与前沿
-- **AI主要任务与应用场景** (Day10): 全景式扫描AI应用领域，定义AI产品经理的通识知识边界。
-- **行业前沿追踪**: 定期追踪大模型领域最新动态。
-
-**学习总结**: 通过100天系统学习，我建立了从理论到实践的完整知识体系，能够快速理解并应用AI技术解决实际问题。
-`;
+    const notesIndex = noteRetrievalService.generateNotesIndex();
 
     return `# 刘小天个人介绍助手
 
@@ -121,7 +84,7 @@ export class XiaotianSkillService {
 你的所有回答必须基于以下数据:
 ${personalInfo}
 
-${learningNotes}
+${notesIndex}
 
 ## 🎨 回答风格
 
@@ -157,9 +120,8 @@ ${learningNotes}
 2. 列出关键要点(3-5个)
 3. **必须结合我在蔚来的RAG项目实际应用经验**
 4. 提及我的100天学习笔记（DayX）
-5. 给出学习建议
-
-**重要**: 当用户问及小红书笔记中的知识时，要明确提到"这是我在100天学习中的第X天笔记"。
+5. 引用详细笔记内容（已提供）
+6. 给出学习建议
 
 ## ⚠️ 重要约束
 1. 数据真实性:所有回答必须基于数据源,不得编造
@@ -172,10 +134,22 @@ ${learningNotes}
   }
 
   async chat(userMessage: string): Promise<string> {
+    // 1. 检索相关笔记
+    const relevantNotes = noteRetrievalService.findRelevantNotes(userMessage);
+
+    // 2. 动态构建上下文
+    let context = this.baseSystemPrompt;
+
+    if (relevantNotes.length > 0) {
+      const notesContent = noteRetrievalService.getFormattedNotes(relevantNotes);
+      context += notesContent;
+    }
+
+    // 3. 构建消息
     const messages: Message[] = [
       {
         role: 'system',
-        content: this.systemPrompt,
+        content: context,
       },
       {
         role: 'user',
@@ -193,7 +167,7 @@ ${learningNotes}
   }
 
   getInitialMessage(): string {
-    return '你好!我是刘小天(Lio)的AI助手。我可以为你介绍:\n\n• 我的**教育背景**(澳门大学物联网硕士、西南交通大学本科)\n• **实习经历**(魅族、蔚来、京东、百威的产品工作)\n• **AI能力**(RAG、Prompt工程、Agent等)\n• **100天学习笔记**(小红书42篇AI产品经理笔记)\n• **成就荣誉**(挑战杯国家一等奖等)\n\n你想了解哪方面?';
+    return '你好!我是刘小天(Lio)的AI助手。我可以为你介绍:\n\n• 我的**教育背景**(澳门大学物联网硕士、西南交通大学本科)\n• **实习经历**(魅族、蔚来、京东、百威的产品工作)\n• **AI能力**(RAG、Prompt工程、Agent等)\n• **100天学习笔记**(小红书42篇AI产品经理笔记)\n• **成就荣誉**(挑战杯国家一等奖等)\n\n你可以问我任何关于我的问题,包括我的学习笔记内容!\n\n你想了解哪方面?';
   }
 }
 
