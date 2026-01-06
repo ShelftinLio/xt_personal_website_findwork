@@ -69,16 +69,16 @@ const Navbar = () => (
         <div className="w-6 h-6 bg-gradient-to-br from-emerald-400 to-blue-600 rounded-full shadow-lg shadow-emerald-500/20" />
         <span className="bg-clip-text text-transparent bg-gradient-to-r from-white to-white/60 font-medium">XIAOTIAN LIU</span>
       </div>
-      <div className="hidden md:flex items-center gap-8 text-[11px] font-bold tracking-[0.2em] text-white/40 uppercase">
-        <a href="#experience" className="hover:text-white transition-colors">Experience</a>
-        <a href="#education" className="hover:text-white transition-colors">Education</a>
-        <a href="#capabilities" className="hover:text-white transition-colors">Capabilities</a>
-        <a href="#insights" className="hover:text-white transition-colors">Insights</a>
-        <button 
+      <div className="hidden md:flex items-center gap-8 text-[11px] font-bold tracking-[0.2em] text-white/40">
+        <a href="#experience" className="hover:text-white transition-colors">实习经历</a>
+        <a href="#education" className="hover:text-white transition-colors">教育背景</a>
+        <a href="#capabilities" className="hover:text-white transition-colors">核心能力</a>
+        <a href="#insights" className="hover:text-white transition-colors">学习笔记</a>
+        <button
           onClick={() => document.getElementById('ai-chat')?.scrollIntoView({ behavior: 'smooth' })}
           className="px-5 py-2 rounded-full bg-white text-black text-[10px] hover:bg-emerald-400 transition-all duration-300"
         >
-          AI CONSULTANT
+          AI 助手
         </button>
       </div>
     </div>
@@ -286,11 +286,13 @@ const EducationSection = () => {
             <motion.div
               initial={{ opacity: 0, x: -20 }}
               whileInView={{ opacity: 1, x: 0 }}
-              className="inline-flex items-center gap-3 px-4 py-1.5 rounded-full border border-emerald-400/20 bg-emerald-400/5 text-[10px] font-bold tracking-[0.3em] text-emerald-400 mb-6 uppercase"
+              className="inline-flex items-center gap-3 px-4 py-1.5 rounded-full border border-blue-400/20 bg-blue-400/5 text-[10px] font-bold tracking-[0.3em] text-blue-400 mb-6 uppercase"
             >
-              <MapIcon size={12} /> Academic Progression Path
+              <GraduationCap size={12} /> Education Background
             </motion.div>
-            <h2 className="text-4xl md:text-6xl font-bold tracking-tighter mb-4">学术进阶轨迹</h2>
+            <h2 className="text-4xl md:text-6xl font-bold tracking-tighter mb-4">
+              Education <span className="text-white/30 text-3xl md:text-5xl">教育背景</span>
+            </h2>
             <p className="text-white/30 text-sm md:text-base font-light max-w-xl">
               从机械电子的严谨基座，到物联网与 AI 前沿的跨代跃迁。金色标记代表核心学术荣誉。
             </p>
@@ -458,7 +460,9 @@ const InsightsSection = () => {
       <div className="max-w-7xl mx-auto">
         <div className="flex flex-col md:flex-row justify-between items-end mb-20 gap-8">
           <div>
-            <h2 className="text-4xl font-bold mb-4 tracking-tighter">数字洞见 · 学习笔记</h2>
+            <h2 className="text-4xl font-bold mb-4 tracking-tighter">
+              Insights <span className="text-white/30 text-2xl">学习笔记</span>
+            </h2>
             <p className="text-white/30 font-light max-w-xl">
               我在小红书同步分享《100 天成为 AI 产品经理》系列笔记，记录关于大模型、RAG 及 product 方法论的深度思考。
             </p>
@@ -673,7 +677,9 @@ const AIChat = () => {
 const CapabilitiesSection = () => (
   <section id="capabilities" className="py-32 px-6 max-w-7xl mx-auto">
     <div className="mb-24 text-center">
-      <h2 className="text-4xl font-bold mb-4 tracking-tighter">全栈产品核心胜任力</h2>
+      <h2 className="text-4xl font-bold mb-4 tracking-tighter">
+        Capabilities <span className="text-white/30 text-2xl">核心能力</span>
+      </h2>
       <p className="text-white/30 max-w-2xl mx-auto font-light leading-relaxed">
         将深厚的技术底座 with 敏锐的产品感知相结合，打造具备灵魂的软硬件一体化体验。
       </p>
@@ -769,7 +775,9 @@ const App = () => {
           <div className="max-w-7xl mx-auto">
             <div className="flex flex-col md:flex-row justify-between items-end mb-24 gap-10">
               <div>
-                <h2 className="text-5xl font-bold mb-4 tracking-tighter">职场履历</h2>
+                <h2 className="text-5xl font-bold mb-4 tracking-tighter">
+                  Experience <span className="text-white/30 text-3xl">实习经历</span>
+                </h2>
                 <p className="text-white/30 text-lg font-light">在顶级平台中，将理想转化为可见的产品价值</p>
               </div>
               <div className="px-6 py-2 rounded-full border border-white/5 text-[10px] text-white/20 font-mono tracking-widest uppercase">Methodology_Driven</div>
