@@ -8,6 +8,7 @@ import {
   Send,
   ExternalLink,
   ChevronRight,
+  ChevronDown,
   Zap,
   Shield,
   Palette,
@@ -47,11 +48,13 @@ import {
   Map as MapIcon,
   Calendar,
   MoveRight,
-  Star
+  Star,
+  CheckCircle2
 } from 'lucide-react';
 import { motion, AnimatePresence, useScroll, useTransform, useSpring } from 'framer-motion';
 import { xiaotianSkillService } from './src/services/xiaotianSkillService';
 import { MarkdownRenderer } from './src/components/MarkdownRenderer';
+import { NoteEntry } from './src/data/notesKnowledgeBase';
 
 // --- Types & Constants ---
 const DARK_BG = "bg-[#050505]";
@@ -504,16 +507,35 @@ const InsightsSection = () => {
 };
 
 const AIChat = () => {
-  const [messages, setMessages] = useState<{role: 'user' | 'ai', text: string}[]>([
+  type Message = {
+    role: 'user' | 'ai';
+    text: string;
+    sources?: NoteEntry[];
+  };
+
+  const [messages, setMessages] = useState<Message[]>([
     { role: 'ai', text: xiaotianSkillService.getInitialMessage() }
   ]);
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [expandedSources, setExpandedSources] = useState<Set<number>>(new Set());
   const scrollRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (scrollRef.current) scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
   }, [messages]);
+
+  const toggleSources = (index: number) => {
+    setExpandedSources(prev => {
+      const newSet = new Set(prev);
+      if (newSet.has(index)) {
+        newSet.delete(index);
+      } else {
+        newSet.add(index);
+      }
+      return newSet;
+    });
+  };
 
   const handleSend = async () => {
     if (!input.trim() || isLoading) return;
@@ -525,7 +547,11 @@ const AIChat = () => {
 
     try {
       const response = await xiaotianSkillService.chat(userMsg);
-      setMessages(prev => [...prev, { role: 'ai', text: response }]);
+      setMessages(prev => [...prev, {
+        role: 'ai',
+        text: response.answer,
+        sources: response.sources
+      }]);
     } catch (error) {
       console.error('AI Chat Error:', error);
       setMessages(prev => [...prev, { role: 'ai', text: '抱歉,我现在无法回答。请稍后再试。' }]);
@@ -541,22 +567,74 @@ const AIChat = () => {
           <h2 className="text-4xl font-bold mb-4 tracking-tighter">对话 Lio AI</h2>
           <p className="text-white/20 italic text-sm tracking-widest uppercase font-mono">"Synergizing technical depth with product empathy."</p>
         </div>
-        
+
         <div className={`${CARD_BG} rounded-[56px] overflow-hidden flex flex-col h-[650px] border-white/5 shadow-2xl`}>
           <div ref={scrollRef} className="flex-1 overflow-y-auto p-10 space-y-8 custom-scrollbar bg-black/20">
-            {messages.map((m, i) => (
-              <div key={i} className={`flex ${m.role === 'user' ? 'justify-end' : 'justify-start'}`}>
-                <div className={`max-w-[85%] p-6 rounded-[32px] text-sm leading-relaxed overflow-hidden ${
-                  m.role === 'user'
-                  ? 'bg-white text-black font-medium'
-                  : 'bg-white/5 text-white/70 border border-white/10'
-                }`}>
-                  {m.role === 'ai' ? (
-                    <MarkdownRenderer content={m.text} />
-                  ) : (
-                    m.text
-                  )}
+            {messages.map((m, msgIndex) => (
+              <div key={msgIndex}>
+                <div className={`flex ${m.role === 'user' ? 'justify-end' : 'justify-start'}`}>
+                  <div className={`max-w-[85%] p-6 rounded-[32px] text-sm leading-relaxed overflow-hidden ${
+                    m.role === 'user'
+                    ? 'bg-white text-black font-medium'
+                    : 'bg-white/5 text-white/70 border border-white/10'
+                  }`}>
+                    {m.role === 'ai' ? (
+                      <MarkdownRenderer content={m.text} />
+                    ) : (
+                      m.text
+                    )}
+                  </div>
                 </div>
+
+                {/* 来源展示 */}
+                {m.role === 'ai' && m.sources && m.sources.length > 0 && (
+                  <div className="mt-3 ml-12 max-w-[85%]">
+                    <button
+                      onClick={() => toggleSources(msgIndex)}
+                      className="flex items-center gap-2 text-[10px] text-white/30 hover:text-emerald-400 transition-colors font-mono"
+                    >
+                      <CheckCircle2 size={12} />
+                      <span>基于 {m.sources.length} 篇笔记 · 可验证</span>
+                      <ChevronDown
+                        size={12}
+                        className={`transition-transform ${expandedSources.has(msgIndex) ? 'rotate-180' : ''}`}
+                      />
+                    </button>
+
+                    {expandedSources.has(msgIndex) && (
+                      <div className="mt-3 space-y-2 animate-in slide-in-from-top-2 duration-300">
+                        {m.sources.map((source, idx) => (
+                          <div
+                            key={source.id}
+                            className="bg-white/5 border border-white/10 rounded-xl p-4 hover:border-emerald-400/30 transition-all"
+                            style={{ animationDelay: `${idx * 50}ms` }}
+                          >
+                            <div className="flex items-start justify-between gap-3 mb-2">
+                              <div className="flex-1">
+                                <div className="flex items-center gap-2 mb-1">
+                                  <span className="text-[9px] font-mono text-emerald-400 bg-emerald-400/10 px-2 py-0.5 rounded-full">
+                                    {source.category}
+                                  </span>
+                                  {source.id !== 'ai-assistant' && (
+                                    <span className="text-[9px] font-mono text-white/20">
+                                      {source.id.toUpperCase()}
+                                    </span>
+                                  )}
+                                </div>
+                                <h4 className="text-xs font-bold text-white/60 mb-1">{source.title}</h4>
+                                <p className="text-[10px] text-white/30 font-light">{source.date}</p>
+                              </div>
+                              <BookOpen size={14} className="text-white/20 flex-shrink-0" />
+                            </div>
+                            <div className="text-[10px] text-white/40 leading-relaxed line-clamp-2">
+                              {source.summary}
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                )}
               </div>
             ))}
             {isLoading && (
@@ -567,18 +645,18 @@ const AIChat = () => {
               </div>
             )}
           </div>
-          
+
           <div className="p-8 border-t border-white/5 bg-black/60">
             <div className="relative">
-              <input 
-                type="text" 
+              <input
+                type="text"
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
                 onKeyPress={(e) => e.key === 'Enter' && handleSend()}
                 placeholder="询问关于我的 AI 原型能力、PRD 准则或物联网背景..."
                 className="w-full bg-white/5 border border-white/10 rounded-full py-5 px-10 text-sm focus:outline-none focus:border-emerald-400/50 transition-all placeholder:text-white/10"
               />
-              <button 
+              <button
                 onClick={handleSend}
                 className="absolute right-3 top-3 p-2.5 bg-emerald-500 rounded-full hover:bg-emerald-400 transition-colors"
               >

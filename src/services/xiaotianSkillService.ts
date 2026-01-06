@@ -1,9 +1,15 @@
 import { glmService } from './glmService';
 import { noteRetrievalService } from './noteRetrievalService';
+import { NoteEntry } from '../data/notesKnowledgeBase';
 
 interface Message {
   role: 'system' | 'user' | 'assistant';
   content: string;
+}
+
+export interface ChatResponse {
+  answer: string;
+  sources: NoteEntry[];
 }
 
 export class XiaotianSkillService {
@@ -133,7 +139,7 @@ ${notesIndex}
 请始终用第一人称"我"来回答,保持专业且亲和的语气。当用户问及AI相关问题时,展示我在蔚来RAG项目的实际应用经验和我的100天学习笔记。`;
   }
 
-  async chat(userMessage: string): Promise<string> {
+  async chat(userMessage: string): Promise<ChatResponse> {
     // 1. 检索相关笔记
     const relevantNotes = noteRetrievalService.findRelevantNotes(userMessage);
 
@@ -159,10 +165,16 @@ ${notesIndex}
 
     try {
       const response = await glmService.chat(messages, 'glm-4-flash');
-      return response;
+      return {
+        answer: response,
+        sources: relevantNotes
+      };
     } catch (error) {
       console.error('Xiaotian Skill Service Error:', error);
-      return '抱歉,我现在无法回答。请稍后再试。';
+      return {
+        answer: '抱歉,我现在无法回答。请稍后再试。',
+        sources: []
+      };
     }
   }
 
