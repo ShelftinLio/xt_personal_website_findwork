@@ -287,7 +287,7 @@ const EducationSection = () => {
               <GraduationCap size={12} /> Education Background
             </div>
             <h2 className="text-4xl md:text-5xl font-bold tracking-tighter mb-4">
-              Education <span className="text-white/30 text-2xl md:text-3xl">教育背景</span>
+              教育背景
             </h2>
             <p className="text-white/30 text-sm md:text-base font-light max-w-xl">
               从机械电子的严谨基座，到物联网与 AI 前沿的跨代跃迁。金色标记代表核心学术荣誉。
@@ -460,7 +460,7 @@ const InsightsSection = () => {
               <BookOpen size={12} /> Learning Insights
             </div>
             <h2 className="text-4xl md:text-5xl font-bold mb-4 tracking-tighter">
-              Insights <span className="text-white/30 text-2xl md:text-3xl">学习笔记</span>
+              学习笔记
             </h2>
             <p className="text-white/30 font-light max-w-xl">
               我在小红书同步分享《100 天成为 AI 产品经理》系列笔记，记录关于大模型、RAG 及 product 方法论的深度思考。
@@ -566,12 +566,12 @@ const AIChat = () => {
   return (
     <section id="ai-chat" className="py-32 px-6">
       <div className="max-w-4xl mx-auto">
-        <div className="text-center mb-16">
-          <div className="inline-flex items-center gap-3 px-4 py-1.5 rounded-full border border-emerald-400/20 bg-emerald-400/5 text-[10px] font-bold tracking-[0.3em] text-emerald-400 mb-6 uppercase mx-auto">
+        <div className="mb-16">
+          <div className="inline-flex items-center gap-3 px-4 py-1.5 rounded-full border border-emerald-400/20 bg-emerald-400/5 text-[10px] font-bold tracking-[0.3em] text-emerald-400 mb-6 uppercase">
             <Sparkles size={12} /> AI Assistant
           </div>
           <h2 className="text-4xl md:text-5xl font-bold mb-4 tracking-tighter">
-            AI Chat <span className="text-white/30 text-2xl md:text-3xl">智能助手</span>
+            AI 助手
           </h2>
           <p className="text-white/20 italic text-sm tracking-widest uppercase font-mono">"Synergizing technical depth with product empathy."</p>
         </div>
@@ -680,14 +680,14 @@ const AIChat = () => {
 
 const CapabilitiesSection = () => (
   <section id="capabilities" className="py-32 px-6 max-w-7xl mx-auto">
-    <div className="mb-24 text-center">
+    <div className="mb-24">
       <div className="inline-flex items-center gap-3 px-4 py-1.5 rounded-full border border-amber-400/20 bg-amber-400/5 text-[10px] font-bold tracking-[0.3em] text-amber-400 mb-6 uppercase">
         <Lightbulb size={12} /> Core Capabilities
       </div>
       <h2 className="text-4xl md:text-5xl font-bold mb-4 tracking-tighter">
-        Capabilities <span className="text-white/30 text-2xl md:text-3xl">核心能力</span>
+        核心能力
       </h2>
-      <p className="text-white/30 max-w-2xl mx-auto font-light leading-relaxed">
+      <p className="text-white/30 max-w-2xl font-light leading-relaxed">
         将深厚的技术底座 with 敏锐的产品感知相结合，打造具备灵魂的软硬件一体化体验。
       </p>
     </div>
@@ -786,7 +786,7 @@ const App = () => {
                   <Briefcase size={12} /> Professional Experience
                 </div>
                 <h2 className="text-4xl md:text-5xl font-bold mb-4 tracking-tighter">
-                  Experience <span className="text-white/30 text-2xl md:text-3xl">实习经历</span>
+                  实习经历
                 </h2>
                 <p className="text-white/30 text-lg font-light">在顶级平台中，将理想转化为可见的产品价值</p>
               </div>
