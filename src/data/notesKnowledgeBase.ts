@@ -14,6 +14,195 @@ export interface NoteEntry {
 }
 
 export const notesKnowledgeBase: Record<string, NoteEntry> = {
+  // AI 助手原理说明（新增）
+  "ai-assistant": {
+    id: "ai-assistant",
+    title: "AI 助手技术原理：基于 SKILL 方法的智能检索系统",
+    date: "2025/01/06",
+    summary: "我的 AI 助手使用 SKILL 方法实现，通过三层架构（索引层、检索层、注入层）智能加载知识，避免了传统全量注入的上下文爆炸问题。",
+    fullContent: `# AI 助手技术原理：SKILL 方法
+
+## 核心概念
+我的 AI 助手使用了 **SKILL 方法**（Structured Knowledge Injection with Layered Lookup），这是一种创新的智能检索架构，能够根据用户问题动态加载相关知识。
+
+## 为什么需要 SKILL 方法？
+
+### 传统方案的问题
+**全量注入方案**：
+- 将 42 篇小红书笔记（约 42,000 字）全部注入 System Prompt
+- 每次问答都发送完整内容
+- **问题**：Token 浪费、上下文混乱、响应慢
+
+### SKILL 方案的优势
+- **智能检索**：根据用户问题只加载相关笔记
+- **Token 节省**：默认 3,000 字，按需扩展，节省 80%
+- **回答精准**：基于完整笔记内容，非摘要
+
+## 三层架构
+
+### Layer 1: 索引层（基础提示词）
+**内容**：
+- 个人信息（教育、实习、成就）约 2,000 字
+- 42 篇笔记的标题 + 一句话摘要约 1,000 字
+- 总计：约 3,000 字
+
+**状态**：始终存在，常驻上下文
+
+**作用**：为 AI 提供基础知识和"目录"
+
+### Layer 2: 检索层（关键词匹配）
+**机制**：
+\`\`\`typescript
+function findRelevantNotes(userQuestion) {
+  // 检测关键词
+  if (userQuestion.includes("RAG")) {
+    return notesKnowledgeBase["day42"]; // 返回 Day42 完整内容
+  }
+  if (userQuestion.includes("Prompt")) {
+    return notesKnowledgeBase["day39"]; // 返回 Day39 完整内容
+  }
+  // ... 其他匹配规则
+}
+\`\`\`
+
+**支持的关键词**：
+- "RAG"、"检索"、"向量" → 加载 Day42
+- "Prompt"、"提示词"、"CoT" → 加载 Day39
+- "Agent"、"智能体"、"上下文" → 加载 Day41
+- "Transformer"、"注意力" → 加载 Day31
+
+### Layer 3: 注入层（动态扩展）
+**工作流程**：
+\`\`\`
+1. 用户提问："RAG 的核心三阶段是什么？"
+2. 检索层检测到 "RAG" 关键词
+3. 将 Day42 的完整内容（1,000 字）添加到上下文
+4. 总上下文：3,000 + 1,000 = 4,000 字
+5. AI 基于完整内容精准回答
+\`\`\`
+
+## 技术栈
+
+### 前端框架
+- **React 19**：UI 组件库
+- **Framer Motion**：动画效果
+- **Tailwind CSS**：样式设计
+- **Vite**：构建工具
+
+### AI 服务
+- **GLM-4-Flash**：智谱 AI 大语言模型
+- **128K 上下文窗口**：支持长文本处理
+- **快速响应**：适合实时对话
+
+### 核心模块
+1. **glmService.ts**：封装 GLM API 调用
+2. **xiaotianSkillService.ts**：主服务，集成 SKILL 逻辑
+3. **noteRetrievalService.ts**：检索服务，关键词匹配
+4. **notesKnowledgeBase.ts**：结构化知识库（JSON）
+
+## 工作流程示例
+
+### 场景 1：问个人信息（不触发加载）
+\`\`\`
+用户："介绍一下你的教育背景"
+↓
+系统 Prompt：3,000 字（个人信息 + 笔记索引）
+↓
+AI 回答："我毕业于澳门大学物联网硕士..."
+\`\`\`
+
+### 场景 2：问 RAG 知识（触发加载 Day42）
+\`\`\`
+用户："RAG 的核心三阶段是什么？"
+↓
+系统 Prompt：3,000 字（基础）
+            + 1,000 字（Day42 完整内容）
+            = 4,000 字
+↓
+AI 回答："基于我在 100 天学习中的 Day42 笔记，
+         RAG 的核心三阶段是索引、检索、生成..."
+\`\`\`
+
+### 场景 3：问多个人问题（加载多篇）
+\`\`\`
+用户："你学过 RAG 和 Prompt 吗？"
+↓
+系统 Prompt：3,000 字（基础）
+            + 1,000 字（Day42: RAG）
+            + 1,000 字（Day39: Prompt）
+            = 5,000 字
+↓
+AI 回答：综合两篇笔记的完整内容回答
+\`\`\`
+
+## 性能指标
+
+### 上下文使用
+- **默认**：3,000 字（~2,000 tokens）
+- **单篇笔记**：+1,000 字（~667 tokens）
+- **最大（3篇）**：6,000 字（~4,000 tokens）
+- **GLM 限制**：96,000 字（~64,000 tokens）
+- **使用率**：仅 6.25% ✅
+
+### Token 成本
+- **传统方案**：每次 ~28,000 tokens
+- **SKILL 方案**：平均 ~4,000 tokens
+- **节省**：85.7% 💰
+
+## 与传统 RAG 的区别
+
+| 特性 | 传统 RAG | SKILL 方法 |
+|------|---------|-----------|
+| **向量数据库** | 需要 | ❌ 不需要 |
+| **Embedding 模型** | 需要 | ❌ 不需要 |
+| **实现复杂度** | 高 | ✅ 低 |
+| **准确性** | 中等 | ✅ 高（完整内容）|
+| **成本** | 高（多次调用）| ✅ 低（单次调用）|
+| **适合场景** | 海量数据 | 中小规模知识库 |
+
+## 设计哲学
+
+**"Simple is Better"**
+- 不需要向量数据库、Embedding 模型等复杂组件
+- 利用 LLM 的强大上下文理解能力
+- 通过智能检索实现精准问答
+- 保持代码简洁、可维护
+
+## 可扩展性
+
+**添加新笔记**：
+1. 在 \`notesKnowledgeBase.ts\` 中添加笔记对象
+2. 在 \`keywordToNoteId\` 中添加关键词映射
+3. 完成！无需修改其他代码
+
+**示例**：
+\`\`\`typescript
+"day43": {
+  id: "day43",
+  title: "新笔记标题",
+  summary: "一句话摘要",
+  fullContent: "完整内容...",
+  keywords: ["关键词1", "关键词2"],
+  category: "RAG"
+}
+\`\`\`
+
+## 总结
+
+我的 AI 助手证明了：**不需要复杂的 RAG 系统，也能实现精准的知识问答**。
+
+通过 SKILL 方法的三层架构，我实现了：
+- ✅ 轻量级（无需向量数据库）
+- ✅ 高效率（Token 节省 85%）
+- ✅ 高准确（基于完整内容）
+- ✅ 可维护（结构化代码）
+
+这就是技术与产品思维结合的产物！
+`,
+    keywords: ["AI", "助手", "原理", "SKILL", "架构", "检索", "系统", "技术"],
+    category: "AI"
+  },
+
   // RAG 系列
   "day42": {
     id: "day42",
@@ -440,58 +629,78 @@ pip install -r requirements.txt
  * 按类别分组的笔记索引
  */
 export const notesByCategory: Record<string, string[]> = {
+  "AI": ["ai-assistant", "day10"],
   "RAG": ["day42"],
   "Agent": ["day41"],
   "Prompt": ["day39"],
   "NLP": ["day31"],
   "ML": ["day19"],
   "Product": ["day2"],
-  "Python": ["day13"],
-  "AI": ["day10"]
+  "Python": ["day13"]
 };
 
 /**
  * 关键词到笔记 ID 的映射
  */
 export const keywordToNoteId: Record<string, string> = {
+  // AI 助手原理
+  "ai助手": "ai-assistant",
+  "ai-assistant": "ai-assistant",
+  "助手": "ai-assistant",
+  "原理": "ai-assistant",
+  "skill": "ai-assistant",
+  "架构": "ai-assistant",
+  "技术": "ai-assistant",
+  "系统": "ai-assistant",
+  "怎么工作": "ai-assistant",
+  "如何实现": "ai-assistant",
+
+  // RAG
   "rag": "day42",
   "检索增强": "day42",
   "检索": "day42",
   "向量": "day42",
   "知识库": "day42",
 
+  // Agent
   "agent": "day41",
   "智能体": "day41",
   "上下文": "day41",
   "context": "day41",
 
+  // Prompt
   "prompt": "day39",
   "提示词": "day39",
   "cot": "day39",
   "chain of thought": "day39",
   "few-shot": "day39",
 
+  // NLP
   "transformer": "day31",
   "注意力": "day31",
   "attention": "day31",
   "encoder": "day31",
   "decoder": "day31",
 
+  // ML
   "决策树": "day19",
   "随机森林": "day19",
   "机器学习": "day19",
   "ml": "day19",
   "分类": "day19",
 
+  // Product
   "产品": "day2",
   "需求": "day2",
   "洞察": "day2",
   "用户": "day2",
 
+  // Python
   "python": "day13",
   "面向对象": "day13",
   "oop": "day13",
 
+  // AI 应用
   "ai": "day10",
   "应用场景": "day10",
   "人工智能": "day10"

@@ -47,9 +47,9 @@ export class NoteRetrievalService {
    * 生成笔记的简要索引（用于 System Prompt）
    */
   generateNotesIndex(): string {
-    let index = `## 小红书学习笔记索引（100天 AI 产品经理精选）
+    let index = `## 知识笔记索引
 
-以下是我的核心学习笔记，涵盖 AI 产品经理的关键知识领域：
+以下是我的核心知识储备，包括 AI 技术笔记和个人 AI 助手的实现原理：
 
 `;
 
@@ -62,8 +62,8 @@ export class NoteRetrievalService {
       categories[note.category].push(note);
     });
 
-    // 生成索引
-    const categoryOrder = ['RAG', 'Prompt', 'Agent', 'NLP', 'ML', 'AI', 'Product', 'Python'];
+    // 生成索引（AI 类别放最前面，方便 HR 了解技术原理）
+    const categoryOrder = ['AI', 'RAG', 'Prompt', 'Agent', 'NLP', 'ML', 'Product', 'Python'];
 
     categoryOrder.forEach(category => {
       if (categories[category]) {
@@ -72,12 +72,15 @@ export class NoteRetrievalService {
           index += `**${note.title}**\n`;
           index += `- 日期: ${note.date}\n`;
           index += `- 摘要: ${note.summary}\n`;
-          index += `- ID: ${note.id.toUpperCase()}\n\n`;
+          if (note.id !== 'ai-assistant') {
+            index += `- ID: ${note.id.toUpperCase()}\n`;
+          }
+          index += `\n`;
         });
       }
     });
 
-    index += `**使用说明**: 当用户问及相关问题时，我会自动加载对应笔记的详细内容进行回答。`;
+    index += `**使用说明**: 当用户问及相关问题时，我会自动加载对应笔记的详细内容进行回答。如果想了解 AI 助手的技术实现，可以问"你的 AI 助手是怎么工作的？"。`;
 
     return index;
   }
