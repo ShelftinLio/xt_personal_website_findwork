@@ -836,10 +836,10 @@ const App = () => {
         {/* Unified Capabilities Section */}
         <CapabilitiesSection />
 
-        <AIChat />
-
-        {/* Insights Section - Moved to End */}
+        {/* Insights Section - Learning Notes */}
         <InsightsSection />
+
+        <AIChat />
 
         {/* Footer */}
         <footer className="py-32 px-6 border-t border-white/5 relative bg-black">
