@@ -1,0 +1,28 @@
+<svg width="100" height="100" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+  <style>
+    /* Default (Light Mode): Dark lines */
+    .dynamic-stroke { stroke: #1a1a1a; }
+    .dynamic-fill { fill: #1a1a1a; }
+    
+    /* Dark Mode: White lines */
+    @media (prefers-color-scheme: dark) {
+      .dynamic-stroke { stroke: #ffffff; }
+      .dynamic-fill { fill: #ffffff; }
+    }
+  </style>
+
+  <!-- Outer Ring Arc -->
+  <path d="M 25,50 A 25,25 0 1,1 75,50 A 25,25 0 1,1 25,50" fill="none" class="dynamic-stroke" stroke-width="8" stroke-linecap="round" opacity="0.9" />
+
+  <!-- Left Circle (Cyan) with L -->
+  <!-- Cyan circle is always cyan -->
+  <circle cx="30" cy="50" r="18" fill="#0ea5e9" />
+  <!-- L inside cyan is always black for contrast -->
+  <path d="M 22,42 V 58 H 38" fill="none" stroke="black" stroke-width="6" stroke-linecap="square" />
+
+  <!-- Middle I (Vertical Bar) -->
+  <rect x="52" y="35" width="6" height="30" rx="1" class="dynamic-fill" opacity="0.9" />
+
+  <!-- Right O (Ring) -->
+  <circle cx="78" cy="50" r="12" fill="none" class="dynamic-stroke" stroke-width="6" opacity="0.9" />
+</svg>

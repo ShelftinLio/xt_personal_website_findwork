@@ -33,7 +33,7 @@ import {
   ZapOff,
   Fingerprint,
   Code2,
-  Terminal,
+  Terminal as TerminalIcon,
   Languages,
   Target,
   Clock,
@@ -65,8 +65,24 @@ const CARD_BG = "bg-white/5 backdrop-blur-xl border border-white/10";
 const Navbar = () => (
   <nav className="fixed top-0 w-full z-50 border-b border-white/5 bg-black/50 backdrop-blur-md">
     <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
-      <div className="text-xl font-bold tracking-tighter flex items-center gap-2">
-        <div className="w-6 h-6 bg-gradient-to-br from-emerald-400 to-blue-600 rounded-full shadow-lg shadow-emerald-500/20" />
+      <div className="text-xl font-bold tracking-tighter flex items-center gap-3">
+        {/* LIO Logo SVG */}
+        <div className="w-8 h-8 relative flex items-center justify-center">
+          <svg viewBox="0 0 100 100" className="w-full h-full" xmlns="http://www.w3.org/2000/svg">
+            {/* Outer Ring Segment (Black) - Simulating the large circle arc behind L */}
+            <path d="M 25,50 A 25,25 0 1,1 75,50 A 25,25 0 1,1 25,50" fill="none" stroke="white" strokeWidth="8" strokeLinecap="round" className="opacity-90" />
+            
+            {/* Left Circle (Cyan) with L */}
+            <circle cx="30" cy="50" r="18" fill="#0ea5e9" /> {/* Sky blue/cyan base */}
+            <path d="M 22,42 V 58 H 38" fill="none" stroke="black" strokeWidth="6" strokeLinecap="square" />
+            
+            {/* Middle I (Vertical Bar) */}
+            <rect x="52" y="35" width="6" height="30" rx="1" fill="white" className="opacity-90" />
+            
+            {/* Right O (Ring) */}
+            <circle cx="78" cy="50" r="12" fill="none" stroke="white" strokeWidth="6" className="opacity-90" />
+          </svg>
+        </div>
         <span className="bg-clip-text text-transparent bg-gradient-to-r from-white to-white/60 font-medium">XIAOTIAN LIU</span>
       </div>
       <div className="hidden md:flex items-center gap-8 text-[11px] font-bold tracking-[0.2em] text-white/40">
@@ -85,12 +101,196 @@ const Navbar = () => (
   </nav>
 );
 
+const TERMINAL_DATA = {
+  summary: {
+    cmd: "lio --whoami",
+    output: [
+      { type: 'info', content: "Loading user profile... Done." },
+      { type: 'success', label: "ROLE", content: "Product Manager Intern (AI, Hardware & Mobility)" },
+      { type: 'text', content: "Passionate about defining the nature of products through ultimate quality." },
+      { type: 'warning', label: "FOCUS", content: ["AI Native", "3C Hardware", "Smart Mobility"] },
+      { type: 'dim', content: "Run specific modules below to see more..." }
+    ]
+  },
+  ai: {
+    cmd: "lio --module ai native",
+    output: [
+      { type: 'info', content: "Initializing AI Core... Connected." },
+      { type: 'success', label: "VISION", content: "Bridging LLMs with Real-World Utility" },
+      { type: 'text', content: "Exploring the paradigm shift from GUI to LUI (Language User Interface)." },
+      { type: 'warning', label: "STACK", content: ["Prompt Engineering", "RAG Systems", "Agentic Workflows"] },
+      { type: 'dim', content: "Ref: NIO AI Platform Experience" }
+    ]
+  },
+  hardware: {
+    cmd: "lio --module 3c-hardware",
+    output: [
+      { type: 'info', content: "Scanning hardware specs... Done." },
+      { type: 'success', label: "DOMAIN", content: "Smartphones & Intelligent Wearables" },
+      { type: 'text', content: "Refusing mediocrity. Crafting hardware with soul and precision." },
+      { type: 'warning', label: "SKILLS", content: ["Market Insight", "Product Definition", "User Scenario"] },
+      { type: 'dim', content: "Ref: MEIZU Smartphone Dept" }
+    ]
+  },
+  mobility: {
+    cmd: "lio --module smart-mobility",
+    output: [
+      { type: 'info', content: "Connecting to vehicle bus... Signal Strong." },
+      { type: 'success', label: "ACADEMIC", content: "Mechanical Engineering @ SWJTU" },
+      { type: 'text', content: "Integrating mechanical precision with intelligent cockpit experiences." },
+      { type: 'warning', label: "EXP", content: ["NIO Internship", "Smart Cockpit", "Vehicle Engineering"] },
+      { type: 'dim', content: "Ref: Various Vehicle-related Experiences" }
+    ]
+  }
+};
+
+const Terminal = () => {
+  const [activeTab, setActiveTab] = useState<'summary' | 'ai' | 'hardware' | 'mobility'>('summary');
+  const [displayedLines, setDisplayedLines] = useState<any[]>([]);
+  const [isTyping, setIsTyping] = useState(false);
+  const [cmdText, setCmdText] = useState("");
+  
+  const currentData = TERMINAL_DATA[activeTab];
+
+  useEffect(() => {
+    let isMounted = true;
+    
+    const runSequence = async () => {
+      if (!isMounted) return;
+      setIsTyping(true);
+      setDisplayedLines([]);
+      setCmdText("");
+
+      // Type command
+      const cmd = currentData.cmd;
+      for (let i = 0; i <= cmd.length; i++) {
+        if (!isMounted) return;
+        setCmdText(cmd.slice(0, i));
+        await new Promise(r => setTimeout(r, 30 + Math.random() * 30));
+      }
+
+      await new Promise(r => setTimeout(r, 300));
+      if (!isMounted) return;
+
+      // Show output lines one by one
+      const lines = currentData.output;
+      for (let i = 0; i < lines.length; i++) {
+        if (!isMounted) return;
+        setDisplayedLines(prev => [...prev, lines[i]]);
+        await new Promise(r => setTimeout(r, 150));
+      }
+      setIsTyping(false);
+    };
+
+    runSequence();
+    
+    return () => { isMounted = false; };
+  }, [activeTab]);
+
+  return (
+    <div className="w-full max-w-3xl mx-auto perspective-1000">
+      <motion.div
+        initial={{ opacity: 0, scale: 0.9, rotateX: 10 }}
+        animate={{ opacity: 1, scale: 1, rotateX: 0 }}
+        transition={{ duration: 0.8, type: "spring" }}
+        className="relative bg-[#0a0a0a]/90 backdrop-blur-xl border border-white/10 rounded-xl overflow-hidden shadow-2xl shadow-emerald-500/10 ring-1 ring-white/5"
+      >
+        {/* Terminal Header */}
+        <div className="flex items-center justify-between px-4 py-3 bg-white/5 border-b border-white/5">
+          <div className="flex gap-2">
+            <div className="w-3 h-3 rounded-full bg-red-500/80" />
+            <div className="w-3 h-3 rounded-full bg-yellow-500/80" />
+            <div className="w-3 h-3 rounded-full bg-green-500/80" />
+          </div>
+          <div className="text-[10px] font-mono text-white/30 tracking-widest uppercase">lio-terminal — zsh — 80x24</div>
+          <div className="w-10" /> {/* Spacer for centering */}
+        </div>
+
+        {/* Terminal Tabs */}
+        <div className="flex border-b border-white/5 bg-black/20 overflow-x-auto scrollbar-hide">
+          {[
+            { id: 'summary', label: 'MAIN', icon: TerminalIcon },
+            { id: 'ai', label: 'AI NATIVE', icon: Sparkles, color: 'text-purple-400' },
+            { id: 'hardware', label: '3C HARDWARE', icon: Smartphone, color: 'text-blue-400' },
+            { id: 'mobility', label: 'SMART MOBILITY', icon: Zap, color: 'text-amber-400' },
+          ].map((tab: any) => (
+            <button
+              key={tab.id}
+              onClick={() => !isTyping && setActiveTab(tab.id as any)}
+              disabled={isTyping}
+              className={`
+                flex items-center gap-2 px-6 py-3 text-[10px] font-bold tracking-wider transition-all whitespace-nowrap
+                ${activeTab === tab.id ? 'bg-white/10 text-white border-b-2 border-emerald-500' : 'text-white/40 hover:text-white/70 hover:bg-white/5'}
+                ${isTyping ? 'cursor-not-allowed opacity-50' : 'cursor-pointer'}
+              `}
+            >
+              <tab.icon size={12} className={tab.color || ""} />
+              {tab.label}
+            </button>
+          ))}
+        </div>
+
+        {/* Terminal Body */}
+        <div className="p-6 md:p-8 font-mono text-sm md:text-base min-h-[320px] bg-black/40">
+          <div className="flex items-center gap-3 text-emerald-400 mb-4">
+            <span className="text-blue-400">➜</span>
+            <span className="text-pink-400">~</span>
+            <span>{cmdText}</span>
+            <motion.span
+              animate={{ opacity: [1, 0] }}
+              transition={{ repeat: Infinity, duration: 0.8 }}
+              className="w-2.5 h-5 bg-emerald-500 block"
+            />
+          </div>
+
+          <div className="space-y-3">
+            {displayedLines.map((line, idx) => (
+              <motion.div 
+                key={idx}
+                initial={{ opacity: 0, x: -10 }}
+                animate={{ opacity: 1, x: 0 }}
+                className="flex flex-col sm:flex-row sm:items-baseline gap-2 sm:gap-4 leading-relaxed"
+              >
+                {line.label && (
+                  <span className={`
+                    shrink-0 text-[10px] font-bold px-2 py-0.5 rounded border uppercase tracking-wider w-fit
+                    ${line.type === 'success' ? 'border-emerald-500/30 text-emerald-400 bg-emerald-500/10' : ''}
+                    ${line.type === 'warning' ? 'border-amber-500/30 text-amber-400 bg-amber-500/10' : ''}
+                    ${line.type === 'info' ? 'border-blue-500/30 text-blue-400 bg-blue-500/10' : ''}
+                  `}>
+                    {line.label}
+                  </span>
+                )}
+                
+                <div className={`
+                  ${line.type === 'dim' ? 'text-white/30 italic text-xs mt-1' : 'text-white/80'}
+                  ${Array.isArray(line.content) ? 'flex flex-wrap gap-2' : ''}
+                `}>
+                  {Array.isArray(line.content) ? (
+                    line.content.map((tag: string, i: number) => (
+                      <span key={i} className="text-xs border border-white/10 px-2 py-1 rounded bg-white/5 text-white/70">
+                        {tag}
+                      </span>
+                    ))
+                  ) : (
+                    line.content
+                  )}
+                </div>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </motion.div>
+    </div>
+  );
+};
+
 const Hero = () => {
   const { scrollY } = useScroll();
   const y1 = useTransform(scrollY, [0, 500], [0, 200]);
 
   return (
-    <section className="relative min-h-screen flex items-center justify-center overflow-hidden pt-20">
+    <section className="relative min-h-screen flex flex-col items-center justify-center overflow-hidden pt-24 pb-12">
       <div className="absolute inset-0 z-0 bg-[#080808]">
         {/* Animated Background Elements */}
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_20%,rgba(16,185,129,0.05)_0%,transparent_50%)]" />
@@ -110,35 +310,29 @@ const Hero = () => {
       
       <motion.div 
         style={{ y: y1 }}
-        className="relative z-10 text-center px-6"
+        className="relative z-10 w-full px-6 max-w-5xl mx-auto"
       >
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8 }}
-          className="inline-flex items-center gap-3 px-5 py-2 rounded-full border border-white/10 bg-white/5 text-[10px] font-bold tracking-[0.2em] text-emerald-400 mb-8 uppercase"
-        >
-          <Sparkles size={12} /> The Pursuit of Ultimate Quality
-        </motion.div>
-        
-        <motion.h1 
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.2 }}
-          className="text-6xl md:text-8xl font-bold tracking-tighter mb-8 bg-clip-text text-transparent bg-gradient-to-b from-white to-white/40 leading-[1.1]"
-        >
-          追求极致<br />定义产品的本色
-        </motion.h1>
-        
-        <motion.p 
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 1, delay: 0.4 }}
-          className="max-w-3xl mx-auto text-lg md:text-xl text-white/40 leading-relaxed font-light"
-        >
-          在 3C 数码、物联网以及 AI 驱动的智能终端 方向，我拒绝平庸的堆砌，坚持理想主义的产品审美。<br className="hidden md:block" />
-          通过对底层逻辑的深度挖掘与对 AI 原生产品范式 的探索，将技术确定性打磨为触达灵魂的产品感知。
-        </motion.p>
+        <div className="text-center mb-12">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8 }}
+            className="inline-flex items-center gap-3 px-5 py-2 rounded-full border border-white/10 bg-white/5 text-[10px] font-bold tracking-[0.2em] text-emerald-400 mb-6 uppercase"
+          >
+            <Sparkles size={12} /> The Pursuit of Ultimate Quality
+          </motion.div>
+          
+          <motion.h1 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.2 }}
+            className="text-5xl md:text-7xl font-bold tracking-tighter mb-6 bg-clip-text text-transparent bg-gradient-to-b from-white to-white/40 leading-[1.1]"
+          >
+            XIAOTIAN LIU<br />真诚&效率至上的理想主义产品经理
+          </motion.h1>
+        </div>
+
+        <Terminal />
 
         <motion.div 
           initial={{ opacity: 0, y: 20 }}
@@ -146,8 +340,12 @@ const Hero = () => {
           transition={{ delay: 0.6 }}
           className="mt-12 flex justify-center gap-5"
         >
-          <a href="#ai-chat" className="px-10 py-4 rounded-full bg-white text-black font-semibold hover:bg-emerald-400 transition-all text-sm tracking-tight">关于 Lio</a>
-          <a href="#experience" className="px-10 py-4 rounded-full border border-white/10 hover:bg-white/5 transition-all backdrop-blur-sm text-sm tracking-tight">简历</a>
+          <a href="#ai-chat" className="px-8 py-3 rounded-full bg-white text-black font-semibold hover:bg-emerald-400 transition-all text-sm tracking-tight flex items-center gap-2">
+            问问 AI <ChevronRight size={14} />
+          </a>
+          <a href="#experience" className="px-8 py-3 rounded-full border border-white/10 hover:bg-white/5 transition-all backdrop-blur-sm text-sm tracking-tight text-white/70">
+            查看简历
+          </a>
         </motion.div>
       </motion.div>
     </section>
@@ -218,10 +416,10 @@ const RoadmapMilestone = ({ event, themeColor, popDirection = 'up' }: any) => {
 
       {/* Label */}
       <div className={`absolute ${popDirection === 'up' ? 'top-[calc(50%+24px)]' : 'bottom-[calc(50%+24px)]'} text-center transition-all duration-300 ${isHovered ? 'opacity-100' : 'opacity-40'}`}>
-        <div className={`text-[8px] font-mono font-bold tracking-widest mb-1 ${isHighImpact ? 'text-amber-400/80' : 'text-white/30'}`}>
+        <div className={`text-xs font-mono font-bold tracking-widest mb-2 ${isHighImpact ? 'text-amber-400/90' : 'text-white/40'}`}>
           {event.time}
         </div>
-        <h4 className={`text-[10px] font-bold tracking-tight max-w-[130px] mx-auto leading-tight transition-colors ${isHighImpact ? 'text-amber-400' : 'text-white'}`}>
+        <h4 className={`text-sm font-bold tracking-tight max-w-[160px] mx-auto leading-snug transition-colors ${isHighImpact ? 'text-amber-400' : 'text-white'}`}>
           {event.title}
         </h4>
       </div>
@@ -233,19 +431,19 @@ const RoadmapMilestone = ({ event, themeColor, popDirection = 'up' }: any) => {
             initial={{ opacity: 0, y: popDirection === 'up' ? 10 : -10, scale: 0.95 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: popDirection === 'up' ? 10 : -10, scale: 0.95 }}
-            className={`absolute ${popDirection === 'up' ? 'bottom-[calc(50%+30px)]' : 'top-[calc(50%+30px)]'} z-40 w-[280px] pointer-events-none`}
+            className={`absolute ${popDirection === 'up' ? 'bottom-[calc(50%+30px)]' : 'top-[calc(50%+30px)]'} z-40 w-[320px] pointer-events-none`}
           >
-            <div className={`${CARD_BG} p-5 rounded-[24px] shadow-2xl border-${isHighImpact ? 'amber' : colorClass}-500/30 overflow-hidden`}>
+            <div className={`${CARD_BG} p-6 rounded-[24px] shadow-2xl border-${isHighImpact ? 'amber' : colorClass}-500/30 overflow-hidden`}>
               <div className="relative z-10">
-                <div className={`w-7 h-7 rounded-lg bg-white/5 flex items-center justify-center text-${isHighImpact ? 'amber' : colorClass}-400 mb-3`}>
-                  <Icon size={14} />
+                <div className={`w-8 h-8 rounded-lg bg-white/5 flex items-center justify-center text-${isHighImpact ? 'amber' : colorClass}-400 mb-4`}>
+                  <Icon size={16} />
                 </div>
-                <h5 className={`text-[13px] font-bold mb-1.5 tracking-tight leading-tight ${isHighImpact ? 'text-amber-400' : 'text-white'}`}>{event.title}</h5>
-                <p className="text-[11px] text-white/50 font-light leading-relaxed">{event.subtitle}</p>
+                <h5 className={`text-base font-bold mb-2 tracking-tight leading-tight ${isHighImpact ? 'text-amber-400' : 'text-white'}`}>{event.title}</h5>
+                <p className="text-sm text-white/60 font-light leading-relaxed">{event.subtitle}</p>
               </div>
               {isHighImpact && (
                 <div className="absolute top-0 right-0 p-4 opacity-5 text-amber-400">
-                   <Trophy size={32} />
+                   <Trophy size={40} />
                 </div>
               )}
             </div>
@@ -260,10 +458,10 @@ const RoadmapMilestone = ({ event, themeColor, popDirection = 'up' }: any) => {
 
 const EducationSection = () => {
   const umEvents = [
-    { time: "2025.06", title: "研究论文发表", subtitle: "《面向精准调控的负荷聚合商响应性能评价与市场出清方法》，第一作者，发表于北大核心《电力系统保护与控制》", icon: BookOpen, impact: 'high' },
+    { time: "2025.06", title: "研究论文发表", subtitle: "《面向精准调控的负荷聚合商响应性能评价与市场出清方法》，第一作者，北大核心期刊", icon: BookOpen, impact: 'high' },
     { time: "2025.07", title: "腾讯产品创造营", subtitle: "腾讯未来产品经理创造营，深入探索 AI 时代下的产品 definition 与用户增长策略", icon: Target },
     { time: "2024.11", title: "“丝路”智能量测赛", subtitle: "决赛三等奖，基于物联网数据的智能量测开发生态应用探索", icon: Trophy },
-    { time: "2024.10", title: "“挑战杯”创业赛国铜", subtitle: "第十四届“挑战杯”秦创原中国大学生创业计划竞赛全国铜奖", icon: Award },
+    { time: "2024.10", title: "“挑战杯”创业赛国铜", subtitle: "第十四届“挑战杯”秦创原中国大学生创业计划竞赛全国铜奖", icon: Award, impact: 'high' },
     { time: "2024.08", title: "研究生会监事会监事", subtitle: "参与校级研究生组织合规监督与治理工作", icon: Shield },
     { time: "2023.11", title: "自动驾驶赛全国第2", subtitle: "格兰披治元宇宙自动驾驶挑战赛 (Macau Grand Prix) 全国第二名", icon: Cpu },
     { time: "2023.10", title: "“挑战杯”学术赛国一", subtitle: "第十八届“挑战杯”全国大学生课外学术科技作品竞赛，全国一等奖", icon: Award, impact: 'high' }
@@ -304,11 +502,11 @@ const EducationSection = () => {
         <div className="relative w-full overflow-x-auto custom-scrollbar-h">
           <div className="flex h-[340px] w-max items-center px-12 relative pt-20">
             {/* Guide Line */}
-            <div className="absolute top-[200px] left-0 right-0 h-[1px] bg-emerald-500/10 z-0" />
-            <div className="absolute top-[200px] left-0 right-0 h-[1px] bg-gradient-to-r from-emerald-500/20 via-emerald-400/5 to-transparent z-10" />
+            <div className="absolute top-[210px] left-0 right-0 h-[1px] bg-emerald-500/10 z-0" />
+            <div className="absolute top-[210px] left-0 right-0 h-[1px] bg-gradient-to-r from-emerald-500/20 via-emerald-400/5 to-transparent z-10" />
             
             <div className="sticky left-0 z-30 pr-12 translate-y-[20px]">
-              <div className="px-6 py-4 rounded-2xl bg-emerald-500/5 border border-emerald-500/20 backdrop-blur-xl min-w-[220px]">
+              <div className="px-6 py-5 rounded-2xl bg-emerald-500/5 border border-emerald-500/20 backdrop-blur-xl min-w-[260px]">
                 <h3 className="text-xl font-black tracking-tight text-emerald-400 uppercase">University of Macau</h3>
                 <p className="text-[11px] text-white/80 font-bold tracking-tight">澳门大学</p>
                 <div className="h-px w-8 bg-emerald-500/30 my-2" />
@@ -334,11 +532,11 @@ const EducationSection = () => {
         <div className="relative w-full overflow-x-auto custom-scrollbar-h">
           <div className="flex h-[340px] w-max items-center px-12 relative pb-20">
             {/* Guide Line */}
-            <div className="absolute top-[120px] left-0 right-0 h-[1px] bg-blue-500/10 z-0" />
-            <div className="absolute top-[120px] left-0 right-0 h-[1px] bg-gradient-to-r from-blue-500/20 via-blue-400/5 to-transparent z-10" />
+            <div className="absolute top-[130px] left-0 right-0 h-[1px] bg-blue-500/10 z-0" />
+            <div className="absolute top-[130px] left-0 right-0 h-[1px] bg-gradient-to-r from-blue-500/20 via-blue-400/5 to-transparent z-10" />
             
             <div className="sticky left-0 z-30 pr-12 -translate-y-[20px]">
-              <div className="px-6 py-4 rounded-2xl bg-blue-500/5 border border-blue-500/20 backdrop-blur-xl min-w-[220px]">
+              <div className="px-6 py-5 rounded-2xl bg-blue-500/5 border border-blue-500/20 backdrop-blur-xl min-w-[260px]">
                 <h3 className="text-xl font-black tracking-tight text-blue-400 uppercase">Southwest Jiaotong</h3>
                 <p className="text-[11px] text-white/80 font-bold tracking-tight">西南交通大学</p>
                 <div className="h-px w-8 bg-blue-500/30 my-2" />
@@ -428,7 +626,7 @@ const InsightsSection = () => {
       date: "2025/8/13",
       day: "Day 13/100",
       description: "Python 虚拟环境搭建与 OOP 编程范式，为 AI 开发构建坚实的工程底座。",
-      icon: <Terminal size={18} />,
+      icon: <TerminalIcon size={18} />,
       link: "https://www.xiaohongshu.com/discovery/item/689cb2bb000000001d025b2f"
     },
     { 
@@ -688,7 +886,7 @@ const CapabilitiesSection = () => (
         核心能力
       </h2>
       <p className="text-white/30 max-w-2xl font-light leading-relaxed">
-        将深厚的技术底座 with 敏锐的产品感知相结合，打造具备灵魂的软硬件一体化体验。
+        将深厚的技术底座与敏锐的产品感知相结合，打造具备灵魂的软硬件一体化体验。
       </p>
     </div>
 
@@ -696,9 +894,9 @@ const CapabilitiesSection = () => (
     <div className="grid md:grid-cols-3 gap-8 mb-16">
       <div className={`${CARD_BG} p-10 rounded-[48px] group hover:border-emerald-400/50 transition-all duration-500`}>
         <div className="w-14 h-14 rounded-2xl bg-emerald-500/10 flex items-center justify-center text-emerald-400 mb-8 group-hover:scale-110 transition-transform"><Smartphone size={28} /></div>
-        <h3 className="text-xl font-bold mb-4">3C 数码精品 definition</h3>
+        <h3 className="text-xl font-bold mb-4">3C 数码精品定义</h3>
         <p className="text-sm text-white/40 leading-relaxed font-light">
-          深度参与头部品牌机型 definition，擅长多维竞品对标，追求每一处硬件选型与工业设计的极致和谐。
+          深度参与头部品牌机型定义，擅长多维竞品对标，追求每一处硬件选型与工业设计的极致和谐。
         </p>
       </div>
       <div className={`${CARD_BG} p-10 rounded-[48px] group hover:border-blue-400/50 transition-all duration-500`}>
@@ -758,12 +956,12 @@ const CapabilitiesSection = () => (
         <div className="text-[10px] text-white/20 font-bold tracking-widest">英语流利沟通</div>
       </div>
       <div className={`${CARD_BG} p-8 rounded-[40px] text-center hover:border-red-500/30 transition-all`}>
-        <div className="text-3xl font-bold text-red-400 mb-1">Nat. 1st</div>
-        <div className="text-[10px] text-white/20 font-bold tracking-widest">挑战杯国家奖项</div>
+        <div className="text-3xl font-bold text-red-400 mb-1">National 1st</div>
+        <div className="text-[10px] text-white/20 font-bold tracking-widest">挑战杯国家级奖项</div>
       </div>
       <div className={`${CARD_BG} p-8 rounded-[40px] text-center hover:border-purple-500/30 transition-all`}>
-        <div className="text-3xl font-bold text-purple-400 mb-1">目标导向</div>
-        <div className="text-[10px] text-white/20 font-bold tracking-widest">解决复杂问题</div>
+        <div className="text-3xl font-bold text-purple-400 mb-1">National 2st</div>
+        <div className="text-[10px] text-white/20 font-bold tracking-widest">机械创新与设计大赛</div>
       </div>
     </div>
   </section>
@@ -802,7 +1000,7 @@ const App = () => {
                 details={[
                   "深度拆解小米、Vivo 等头部品牌机型，从硬件选型到市场定价输出全维度竞品报告。",
                   "主导新机型软件功能需求梳理，负责核心卖点 PRD 撰写，协调跨部门技术评审。",
-                  "参与硬件可行性评估，确保新品 definition 在技术实现与市场竞争力之间达到平衡。"
+                  "参与硬件可行性评估，确保新品定义在技术实现与市场竞争力之间达到平衡。"
                 ]}
               />
               <ExperienceItem 
@@ -861,18 +1059,18 @@ const App = () => {
               </p>
               <div className="flex gap-10">
                 <a href="https://github.com/ShelftinLio" className="text-white/20 hover:text-emerald-400 transition-colors duration-500"><Github size={28} /></a>
-                <a href="mailto:xiaotian.lio@um.edu.mo" className="text-white/20 hover:text-emerald-400 transition-colors duration-500"><Send size={28} /></a>
+                <a href="mailto:173967285@qq.com" className="text-white/20 hover:text-emerald-400 transition-colors duration-500"><Send size={28} /></a>
               </div>
             </div>
             <div className="md:text-right">
               <p className="text-[10px] text-white/10 mb-5 uppercase tracking-[0.5em] font-bold">Idealistic Product Manager Intern</p>
               <a 
-                href="mailto:xiaotian.lio@um.edu.mo" 
+                href="mailto:173967285@qq.com" 
                 className="text-4xl md:text-7xl font-bold tracking-tighter hover:text-emerald-400 transition-all duration-700 block mb-4"
               >
-                LIO@UM.MACAU
+                173967285@QQ.COM
               </a>
-              <p className="text-white/10 text-xs font-mono">XIAOTIAN.LIO@UM.EDU.MO</p>
+              <p className="text-white/10 text-xs font-mono">173967285@QQ.COM</p>
             </div>
           </div>
           <div className="max-w-7xl mx-auto mt-32 pt-10 border-t border-white/5 flex flex-col md:flex-row justify-between text-[10px] tracking-[0.3em] text-white/10 uppercase font-bold">

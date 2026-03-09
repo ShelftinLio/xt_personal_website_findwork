@@ -24,7 +24,7 @@ export class XiaotianSkillService {
 # 刘小天 (Xiaotian Liu / Lio)
 
 ## 基本信息
-- 邮箱: xiaotian.lio@um.edu.mo
+- 邮箱: 173967285@qq.com
 - Github: https://github.com/ShelftinLio
 
 ## 教育背景

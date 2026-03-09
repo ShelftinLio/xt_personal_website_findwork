@@ -78,7 +78,7 @@ version: 1.0.0
 - [成就类型]：[具体成就]
 
 ## 联系方式
-- Email: xiaotian.lio@um.edu.mo
+- Email: 173967285@qq.com
 - Github: https://github.com/ShelftinLio
 ```
 
