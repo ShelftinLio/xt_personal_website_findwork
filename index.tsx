@@ -6,6 +6,7 @@ import {
   Layers,
   MessageSquare,
   Send,
+  ArrowUp,
   ExternalLink,
   ChevronRight,
   ChevronDown,
@@ -333,20 +334,6 @@ const Hero = () => {
         </div>
 
         <Terminal />
-
-        <motion.div 
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.6 }}
-          className="mt-12 flex justify-center gap-5"
-        >
-          <a href="#ai-chat" className="px-8 py-3 rounded-full bg-white text-black font-semibold hover:bg-emerald-400 transition-all text-sm tracking-tight flex items-center gap-2">
-            问问 AI <ChevronRight size={14} />
-          </a>
-          <a href="#experience" className="px-8 py-3 rounded-full border border-white/10 hover:bg-white/5 transition-all backdrop-blur-sm text-sm tracking-tight text-white/70">
-            查看简历
-          </a>
-        </motion.div>
       </motion.div>
     </section>
   );
@@ -460,17 +447,17 @@ const EducationSection = () => {
   const umEvents = [
     { time: "2025.06", title: "研究论文发表", subtitle: "《面向精准调控的负荷聚合商响应性能评价与市场出清方法》，第一作者，北大核心期刊", icon: BookOpen, impact: 'high' },
     { time: "2025.07", title: "腾讯产品创造营", subtitle: "腾讯未来产品经理创造营，深入探索 AI 时代下的产品 definition 与用户增长策略", icon: Target },
-    { time: "2024.11", title: "“丝路”智能量测赛", subtitle: "决赛三等奖，基于物联网数据的智能量测开发生态应用探索", icon: Trophy },
-    { time: "2024.10", title: "“挑战杯”创业赛国铜", subtitle: "第十四届“挑战杯”秦创原中国大学生创业计划竞赛全国铜奖", icon: Award, impact: 'high' },
-    { time: "2024.08", title: "研究生会监事会监事", subtitle: "参与校级研究生组织合规监督与治理工作", icon: Shield },
-    { time: "2023.11", title: "自动驾驶赛全国第2", subtitle: "格兰披治元宇宙自动驾驶挑战赛 (Macau Grand Prix) 全国第二名", icon: Cpu },
-    { time: "2023.10", title: "“挑战杯”学术赛国一", subtitle: "第十八届“挑战杯”全国大学生课外学术科技作品竞赛，全国一等奖", icon: Award, impact: 'high' }
+    { time: "2024.11", title: "“丝路”智能量测赛决赛三等奖", subtitle: "决赛三等奖，基于物联网数据的智能量测开发生态应用探索", icon: Trophy },
+    { time: "2024.10", title: "“挑战杯”大学生创业计划竞赛国家铜奖", subtitle: "第十四届“挑战杯”秦创原中国大学生创业计划竞赛全国铜奖", icon: Award, impact: 'high' },
+    { time: "2024.08", title: "澳门大学研究生会监事会监事", subtitle: "参与校级研究生组织合规监督与治理工作", icon: Shield },
+    { time: "2023.11", title: "格兰披治元宇宙自动驾驶挑战赛第二名", subtitle: "格兰披治元宇宙自动驾驶挑战赛 (Macau Grand Prix) 全国第二名", icon: Cpu },
+    { time: "2023.10", title: "“挑战杯”全国大学生课外学术科技作品竞赛国家一等奖", subtitle: "第十八届“挑战杯”全国大学生课外学术科技作品竞赛，全国一等奖", icon: Award, impact: 'high' }
   ];
 
   const swjtuEvents = [
-    { time: "2023.06", title: "西南交大“优毕”", subtitle: "四年学业圆满完成，获得学校最高综合素质荣誉“优秀毕业生”", icon: GraduationCap },
-    { time: "2023.05", title: "大运会志愿者", subtitle: "成都第31届世界大学生夏季运动会官方志愿服务", icon: Heart },
-    { time: "2022.06", title: "机创设计大赛国二", subtitle: "第九届全国大学生机械创新设计大赛二等奖，展示卓越的机械电子创新能力", icon: Lightbulb, impact: 'high' },
+    { time: "2023.06", title: "西南交大“优秀毕业生”", subtitle: "四年学业圆满完成，获得学校最高综合素质荣誉“优秀毕业生”", icon: GraduationCap },
+    { time: "2023.05", title: "世界大学生运动会志愿者", subtitle: "成都第31届世界大学生夏季运动会官方志愿服务", icon: Heart },
+    { time: "2022.06", title: "机械创新设计大赛国二", subtitle: "第九届全国大学生机械创新设计大赛二等奖，展示卓越的机械电子创新能力", icon: Lightbulb, impact: 'high' },
     { time: "2021.09", title: "青协协会会长", subtitle: "统筹学院青年志愿者协会工作，组织多项社会公益活动", icon: Users },
     { time: "2021.03", title: "校园十佳歌手", subtitle: "在西南交通大学校园十佳歌手大赛中获此荣誉", icon: Mic2 },
     { time: "2019.09", title: "班级班长", subtitle: "入学即担任班长，连续四年带领班级获得“特色班集体”称号", icon: Users }
@@ -707,168 +694,208 @@ const InsightsSection = () => {
   );
 };
 
-const AIChat = () => {
-  type Message = {
-    role: 'user' | 'ai';
-    text: string;
-    sources?: NoteEntry[];
-  };
-
-  const [messages, setMessages] = useState<Message[]>([
-    { role: 'ai', text: xiaotianSkillService.getInitialMessage() }
+const InterviewScene = () => {
+  const [messages, setMessages] = useState<Array<{role: 'lio' | 'hr', content: string}>>([
+    { role: 'lio', content: "你好！我是刘小天(Lio)的 AI 助手 🤖。我对他的经历烂熟于心，您可以问我任何关于他的问题！" }
   ]);
-  const [input, setInput] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
-  const [expandedSources, setExpandedSources] = useState<Set<number>>(new Set());
+  const [isTyping, setIsTyping] = useState(false);
+  const [inputValue, setInputValue] = useState("");
   const scrollRef = useRef<HTMLDivElement>(null);
 
-  useEffect(() => {
-    if (scrollRef.current) scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
-  }, [messages]);
+  const recommendedQuestions = [
+    "如何评估 RAG 系统的检索质量？",
+    "在 Prompt Engineering 中有哪些优化技巧？",
+    "你是如何搭建企业级知识库的？",
+    "如何通过数据埋点优化产品转化率？",
+    "介绍一下你对 Agentic Workflow 的理解",
+    "你在 PRD 撰写中如何确保逻辑闭环？",
+    "能详细介绍一下在蔚来的实习经历吗？",
+    "为什么选择从机械工程转行做产品？"
+  ];
 
-  const toggleSources = (index: number) => {
-    setExpandedSources(prev => {
-      const newSet = new Set(prev);
-      if (newSet.has(index)) {
-        newSet.delete(index);
-      } else {
-        newSet.add(index);
-      }
-      return newSet;
-    });
+  const isOffTopicQuestion = (text: string) => {
+    const t = text.trim().toLowerCase();
+    const patterns: RegExp[] = [
+      /(天气|温度|气温|下雨|降雨|晴天|台风|湿度|weather|temperature|forecast|rain)/i,
+      /(女朋友|男朋友|对象|恋爱|感情|婚姻|结婚|单身|girlfriend|boyfriend|relationship)/i,
+      /(今天(的)?天气|what'?s the weather|天气如何)/i,
+      /(几点|现在(是)?(什么)?时间|今天几号|星期几|date|day of week|what time)/i,
+    ];
+    return patterns.some((p) => p.test(t));
   };
 
-  const handleSend = async () => {
-    if (!input.trim() || isLoading) return;
+  const handleSend = async (text: string) => {
+    const trimmed = text.trim();
+    if (!trimmed || isTyping) return;
 
-    const userMsg = input;
-    setInput('');
-    setMessages(prev => [...prev, { role: 'user', text: userMsg }]);
-    setIsLoading(true);
+    setMessages(prev => [...prev, { role: 'hr', content: trimmed }]);
+    setInputValue("");
+
+    if (isOffTopicQuestion(trimmed)) {
+      setMessages(prev => [
+        ...prev,
+        {
+          role: 'lio',
+          content:
+            "这个问题可能与刘小天的求职/项目/技能无关，我就不展开啦。你可以问我：他的实习经历、RAG 项目、产品方法论、获奖科研、或 100 天学习笔记等。"
+        }
+      ]);
+      return;
+    }
+
+    setIsTyping(true);
 
     try {
-      const response = await xiaotianSkillService.chat(userMsg);
-      setMessages(prev => [...prev, {
-        role: 'ai',
-        text: response.answer,
-        sources: response.sources
-      }]);
+      const response = await xiaotianSkillService.chat(trimmed);
+      setMessages(prev => [...prev, { role: 'lio', content: response.answer }]);
     } catch (error) {
-      console.error('AI Chat Error:', error);
-      setMessages(prev => [...prev, { role: 'ai', text: '抱歉,我现在无法回答。请稍后再试。' }]);
+      setMessages(prev => [...prev, { role: 'lio', content: "抱歉，我刚刚走神了，能再说一遍吗？" }]);
     } finally {
-      setIsLoading(false);
+      setIsTyping(false);
     }
   };
 
+  // Auto-scroll to bottom
+  useEffect(() => {
+    if (scrollRef.current) {
+      scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
+    }
+  }, [messages, isTyping]);
+
   return (
-    <section id="ai-chat" className="py-32 px-6">
-      <div className="max-w-4xl mx-auto">
-        <div className="mb-16">
-          <div className="inline-flex items-center gap-3 px-4 py-1.5 rounded-full border border-emerald-400/20 bg-emerald-400/5 text-[10px] font-bold tracking-[0.3em] text-emerald-400 mb-6 uppercase">
-            <Sparkles size={12} /> AI Assistant
+    <section id="ai-chat" className="py-12 px-4 md:px-6 relative overflow-hidden">
+      <div className="max-w-6xl mx-auto relative z-10">
+        <div className="text-center mb-8">
+          <div className="inline-flex items-center gap-3 px-4 py-1.5 rounded-full border border-emerald-400/20 bg-emerald-400/5 text-[10px] font-bold tracking-[0.3em] text-emerald-400 mb-4 uppercase">
+            <Sparkles size={12} /> Interactive Interview
           </div>
-          <h2 className="text-4xl md:text-5xl font-bold mb-4 tracking-tighter">
-            AI 助手
+          <h2 className="text-3xl md:text-4xl font-bold tracking-tighter mb-2">
+            AI 替我答
           </h2>
-          <p className="text-white/20 italic text-sm tracking-widest uppercase font-mono">"Synergizing technical depth with product empathy."</p>
+          <p className="text-white/30 text-sm md:text-base font-light">
+            像玩游戏一样，与我的 AI 数字分身进行一场深度对话吧
+          </p>
         </div>
 
-        <div className={`${CARD_BG} rounded-[56px] overflow-hidden flex flex-col h-[650px] border-white/5 shadow-2xl`}>
-          <div ref={scrollRef} className="flex-1 overflow-y-auto p-10 space-y-8 custom-scrollbar bg-black/20">
-            {messages.map((m, msgIndex) => (
-              <div key={msgIndex}>
-                <div className={`flex ${m.role === 'user' ? 'justify-end' : 'justify-start'}`}>
-                  <div className={`max-w-[85%] p-6 rounded-[32px] text-sm leading-relaxed overflow-hidden ${
-                    m.role === 'user'
-                    ? 'bg-white text-black font-medium'
-                    : 'bg-white/5 text-white/70 border border-white/10'
-                  }`}>
-                    {m.role === 'ai' ? (
-                      <MarkdownRenderer content={m.text} />
-                    ) : (
-                      m.text
-                    )}
-                  </div>
-                </div>
-
-                {/* 来源展示 */}
-                {m.role === 'ai' && m.sources && m.sources.length > 0 && (
-                  <div className="mt-3 ml-12 max-w-[85%]">
-                    <button
-                      onClick={() => toggleSources(msgIndex)}
-                      className="flex items-center gap-2 text-[10px] text-white/30 hover:text-emerald-400 transition-colors font-mono"
-                    >
-                      <CheckCircle2 size={12} />
-                      <span>基于 {m.sources.length} 篇笔记 · 可验证</span>
-                      <ChevronDown
-                        size={12}
-                        className={`transition-transform ${expandedSources.has(msgIndex) ? 'rotate-180' : ''}`}
-                      />
-                    </button>
-
-                    {expandedSources.has(msgIndex) && (
-                      <div className="mt-3 space-y-2 animate-in slide-in-from-top-2 duration-300">
-                        {m.sources.map((source, idx) => (
-                          <div
-                            key={source.id}
-                            className="bg-white/5 border border-white/10 rounded-xl p-4 hover:border-emerald-400/30 transition-all"
-                            style={{ animationDelay: `${idx * 50}ms` }}
-                          >
-                            <div className="flex items-start justify-between gap-3 mb-2">
-                              <div className="flex-1">
-                                <div className="flex items-center gap-2 mb-1">
-                                  <span className="text-[9px] font-mono text-emerald-400 bg-emerald-400/10 px-2 py-0.5 rounded-full">
-                                    {source.category}
-                                  </span>
-                                  {source.id !== 'ai-assistant' && (
-                                    <span className="text-[9px] font-mono text-white/20">
-                                      {source.id.toUpperCase()}
-                                    </span>
-                                  )}
-                                </div>
-                                <h4 className="text-xs font-bold text-white/60 mb-1">{source.title}</h4>
-                                <p className="text-[10px] text-white/30 font-light">{source.date}</p>
-                              </div>
-                              <BookOpen size={14} className="text-white/20 flex-shrink-0" />
-                            </div>
-                            <div className="text-[10px] text-white/40 leading-relaxed line-clamp-2">
-                              {source.summary}
-                            </div>
-                          </div>
-                        ))}
-                      </div>
-                    )}
-                  </div>
-                )}
-              </div>
-            ))}
-            {isLoading && (
-              <div className="flex gap-2 p-4">
-                <div className="w-1.5 h-1.5 bg-emerald-400 rounded-full animate-bounce" />
-                <div className="w-1.5 h-1.5 bg-emerald-400 rounded-full animate-bounce [animation-delay:0.2s]" />
-                <div className="w-1.5 h-1.5 bg-emerald-400 rounded-full animate-bounce [animation-delay:0.4s]" />
-              </div>
-            )}
+        {/* Game Scene Container */}
+        <div className="relative h-[65vh] min-h-[500px] max-h-[700px] w-full flex justify-between items-end gap-4 md:gap-10">
+          
+          {/* Lio (Left) */}
+          <div className="hidden md:flex flex-col items-center justify-end w-1/4 h-full relative z-20 pointer-events-none">
+             {/* Lio's Character Image */}
+             <motion.img 
+               src="/Lio.png" 
+               alt="Lio Avatar" 
+               className="w-full max-w-[280px] object-contain drop-shadow-[0_0_30px_rgba(16,185,129,0.2)]"
+               initial={{ x: -100, opacity: 0 }}
+               whileInView={{ x: 0, opacity: 1 }}
+               transition={{ duration: 0.8 }}
+             />
           </div>
 
-          <div className="p-8 border-t border-white/5 bg-black/60">
-            <div className="relative">
-              <input
-                type="text"
-                value={input}
-                onChange={(e) => setInput(e.target.value)}
-                onKeyPress={(e) => e.key === 'Enter' && handleSend()}
-                placeholder="询问关于我的 AI 原型能力、PRD 准则或物联网背景..."
-                className="w-full bg-white/5 border border-white/10 rounded-full py-5 px-10 text-sm focus:outline-none focus:border-emerald-400/50 transition-all placeholder:text-white/10"
-              />
-              <button
-                onClick={handleSend}
-                className="absolute right-3 top-3 p-2.5 bg-emerald-500 rounded-full hover:bg-emerald-400 transition-colors"
-              >
-                <Send size={20} />
-              </button>
+          {/* Chat Area (Center) */}
+          <div className="flex-1 h-full flex flex-col relative z-30 max-w-2xl mx-auto w-full">
+            {/* Messages Area */}
+            <div 
+              ref={scrollRef}
+              className="flex-1 overflow-y-auto custom-scrollbar p-4 space-y-6 mb-4 mask-gradient-top"
+            >
+              {messages.map((msg, idx) => (
+                <motion.div
+                  key={idx}
+                  initial={{ opacity: 0, y: 20, scale: 0.95 }}
+                  animate={{ opacity: 1, y: 0, scale: 1 }}
+                  className={`flex ${msg.role === 'hr' ? 'justify-end' : 'justify-start'}`}
+                >
+                  <div className={`
+                    max-w-[85%] md:max-w-[80%] p-5 rounded-3xl text-sm md:text-base leading-relaxed relative shadow-lg
+                    ${msg.role === 'hr' 
+                      ? 'bg-white text-gray-900 font-medium rounded-br-sm mr-2' 
+                      : 'bg-[#1a1a1a] border border-white/10 text-white/90 rounded-bl-sm ml-2'
+                    }
+                  `}>
+                    {/* Role Label */}
+                    <div className={`
+                      absolute -top-6 text-[10px] font-bold tracking-widest uppercase opacity-50
+                      ${msg.role === 'hr' ? 'right-0 text-white' : 'left-0 text-white'}
+                    `}>
+                      {msg.role === 'hr' ? 'Interviewer (HR)' : 'Lio (AI Candidate)'}
+                    </div>
+                    
+                    {/* Bubble Tail */}
+                    <div className={`
+                      absolute bottom-0 w-4 h-4 
+                      ${msg.role === 'hr' 
+                        ? '-right-2 bg-white [clip-path:polygon(0_0,0%_100%,100%_100%)]' 
+                        : '-left-2 bg-[#1a1a1a] border-l border-b border-white/10 [clip-path:polygon(100%_0,0%_100%,100%_100%)]'
+                      }
+                    `} />
+                    
+                    <MarkdownRenderer content={msg.content} variant={msg.role === 'hr' ? 'dark' : 'light'} />
+                  </div>
+                </motion.div>
+              ))}
+
+              {isTyping && (
+                <div className="flex justify-start">
+                  <div className="bg-[#1a1a1a] border border-white/10 p-4 rounded-3xl rounded-bl-sm ml-2 flex gap-2 items-center">
+                    <span className="w-2 h-2 bg-emerald-500 rounded-full animate-bounce" />
+                    <span className="w-2 h-2 bg-emerald-500 rounded-full animate-bounce delay-100" />
+                    <span className="w-2 h-2 bg-emerald-500 rounded-full animate-bounce delay-200" />
+                  </div>
+                </div>
+              )}
             </div>
+
+            {/* Controls Area */}
+            <div className="mt-auto">
+              {/* Recommended Questions (Only show initially) */}
+              {messages.length === 1 && !isTyping && (
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mb-4">
+                  {recommendedQuestions.map((q, i) => (
+                    <button
+                      key={i}
+                      onClick={() => handleSend(q)}
+                      className="px-4 py-3 rounded-xl bg-white/5 hover:bg-white/10 border border-white/5 hover:border-emerald-500/30 text-xs md:text-sm text-left transition-all text-white/60 hover:text-white"
+                    >
+                      {q}
+                    </button>
+                  ))}
+                </div>
+              )}
+
+              {/* Input Bar */}
+              <div className="relative">
+                <input
+                  type="text"
+                  value={inputValue}
+                  onChange={(e) => setInputValue(e.target.value)}
+                  onKeyDown={(e) => e.key === 'Enter' && handleSend(inputValue)}
+                  placeholder="向 Lio 提问..."
+                  className="w-full bg-[#0a0a0a] border border-white/10 rounded-2xl pl-6 pr-14 py-4 text-white placeholder:text-white/20 focus:outline-none focus:border-emerald-500/50 transition-colors"
+                />
+                <button
+                  onClick={() => handleSend(inputValue)}
+                  disabled={!inputValue.trim() || isTyping}
+                  className="absolute right-2 top-2 p-2 bg-emerald-500 rounded-xl text-black hover:bg-emerald-400 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+                >
+                  <ArrowUp size={20} />
+                </button>
+              </div>
+            </div>
+          </div>
+
+          {/* HR (Right) */}
+          <div className="hidden md:flex flex-col items-center justify-end w-1/4 h-full relative z-20 pointer-events-none">
+             {/* HR's Character Image */}
+             <motion.img 
+               src="/HR.png" 
+               alt="HR Avatar" 
+               className="w-full max-w-[280px] object-contain drop-shadow-[0_0_30px_rgba(255,255,255,0.1)]"
+               initial={{ x: 100, opacity: 0 }}
+               whileInView={{ x: 0, opacity: 1 }}
+               transition={{ duration: 0.8 }}
+             />
           </div>
         </div>
       </div>
@@ -1047,7 +1074,7 @@ const App = () => {
         {/* Insights Section - Learning Notes */}
         <InsightsSection />
 
-        <AIChat />
+        <InterviewScene />
 
         {/* Footer */}
         <footer className="py-32 px-6 border-t border-white/5 relative bg-black">
