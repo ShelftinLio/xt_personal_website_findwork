@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const GLM_API_URL = 'https://open.bigmodel.cn/api/paas/v4/chat/completions';
+const GLM_API_URL = '/api/chat';
 
 interface Message {
   role: 'system' | 'user' | 'assistant';
@@ -16,12 +16,6 @@ interface ChatResponse {
 }
 
 export class GLMService {
-  private apiKey: string;
-
-  constructor(apiKey: string) {
-    this.apiKey = apiKey;
-  }
-
   async chat(messages: Message[], model: string = 'glm-4-flash'): Promise<string> {
     try {
       const response = await axios.post<ChatResponse>(
@@ -36,7 +30,6 @@ export class GLMService {
         {
           headers: {
             'Content-Type': 'application/json',
-            'Authorization': `Bearer ${this.apiKey}`,
           },
         }
       );
@@ -49,4 +42,4 @@ export class GLMService {
   }
 }
 
-export const glmService = new GLMService(import.meta.env.VITE_GLM_API_KEY || '');
+export const glmService = new GLMService();

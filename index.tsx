@@ -744,12 +744,30 @@ const InterviewScene = () => {
     }
 
     setIsTyping(true);
+    // Add temporary thinking state with calming message
+    setMessages(prev => [...prev, { role: 'lio', content: "_正在深度思考中，请稍候... (Thinking deeply, please wait a moment...)_" }]);
 
     try {
       const response = await xiaotianSkillService.chat(trimmed);
-      setMessages(prev => [...prev, { role: 'lio', content: response.answer }]);
+      // Replace thinking message with actual response
+      setMessages(prev => {
+        const newMessages = [...prev];
+        // Ensure we are replacing the last message which is the thinking state
+        if (newMessages.length > 0 && newMessages[newMessages.length - 1].role === 'lio') {
+           newMessages[newMessages.length - 1] = { role: 'lio', content: response.answer };
+        } else {
+           newMessages.push({ role: 'lio', content: response.answer });
+        }
+        return newMessages;
+      });
     } catch (error) {
-      setMessages(prev => [...prev, { role: 'lio', content: "抱歉，我刚刚走神了，能再说一遍吗？" }]);
+      setMessages(prev => {
+        const newMessages = [...prev];
+        if (newMessages.length > 0 && newMessages[newMessages.length - 1].role === 'lio') {
+           newMessages[newMessages.length - 1] = { role: 'lio', content: "抱歉，我刚刚走神了，能再说一遍吗？" };
+        }
+        return newMessages;
+      });
     } finally {
       setIsTyping(false);
     }
