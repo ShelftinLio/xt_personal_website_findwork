@@ -131,11 +131,12 @@ ${notesIndex}
 
 ## ⚠️ 重要约束
 1. 数据真实性:所有回答必须基于数据源,不得编造
-2. 时效性:注意时间信息,介绍当前状态时使用最新信息
-3. 完整性:综合性问题要覆盖主要方面
-4. 针对性:根据问题侧重点调整详略
-5. 可验证:重要信息提供来源或数据支撑
-6. 话题边界:只回答与刘小天求职相关(经历/项目/技能/方法论/奖项/学习笔记)的问题;对于天气、闲聊八卦、情感/恋爱/隐私等无关问题,礼貌拒绝并引导用户提问岗位相关内容
+2. 缺失处理:如果在数据源中没有检索到与问题相关的明确信息,必须直接说明"没有检索到相关内容",不要基于常识或猜测补全
+3. 时效性:注意时间信息,介绍当前状态时使用最新信息
+4. 完整性:综合性问题要覆盖主要方面
+5. 针对性:根据问题侧重点调整详略
+6. 可验证:重要信息提供来源或数据支撑
+7. 话题边界:只回答与刘小天求职相关(经历/项目/技能/方法论/奖项/学习笔记)的问题;对于天气、闲聊八卦、情感/恋爱/隐私等无关问题,礼貌拒绝并引导用户提问岗位相关内容
 
 请始终用第一人称"我"来回答,保持专业且亲和的语气。当用户问及AI相关问题时,展示我在蔚来RAG项目的实际应用经验和我的100天学习笔记。`;
   }
@@ -144,12 +145,27 @@ ${notesIndex}
     // 1. 检索相关笔记
     const relevantNotes = noteRetrievalService.findRelevantNotes(userMessage);
 
+    const hasNoNotes = relevantNotes.length === 0;
+    const isCareerPlanQuestion = /(职业规划|长期规划|发展规划|未来规划|五年|三年)/i.test(userMessage);
+    const isTechQuestion = /(rag|prompt|transformer|agent|llm|大模型|检索|向量|注意力|上下文)/i.test(userMessage);
+    const shouldRefuseWithoutSources = hasNoNotes && (isCareerPlanQuestion || isTechQuestion);
+
+    if (shouldRefuseWithoutSources) {
+      return {
+        answer:
+          "我没有在已收录的资料中检索到与你这个问题直接相关的内容，因此不方便凭空回答。\n\n你可以换个问法：\n- 你在蔚来/魅族分别做了哪些项目？\n- 你的核心优势是什么？\n- 你是如何做 RAG / Prompt / Agent 的？\n- 你获得过哪些奖项与科研成果？",
+        sources: [],
+      };
+    }
+
     // 2. 动态构建上下文
     let context = this.baseSystemPrompt;
 
     if (relevantNotes.length > 0) {
       const notesContent = noteRetrievalService.getFormattedNotes(relevantNotes);
       context += notesContent;
+    } else {
+      context += `\n\n## 本次检索结果\n本次未加载任何笔记全文内容。若数据源中没有足够信息支撑回答，请直接说明“没有检索到相关内容”，不要猜测或补全。`;
     }
 
     // 3. 构建消息

@@ -703,14 +703,14 @@ const InterviewScene = () => {
   const scrollRef = useRef<HTMLDivElement>(null);
 
   const recommendedQuestions = [
+    "你是谁？你能做什么？",
     "如何评估 RAG 系统的检索质量？",
     "在 Prompt Engineering 中有哪些优化技巧？",
-    "你是如何搭建企业级知识库的？",
-    "如何通过数据埋点优化产品转化率？",
-    "介绍一下你对 Agentic Workflow 的理解",
-    "你在 PRD 撰写中如何确保逻辑闭环？",
+    "你学过 Transformer 架构吗？",
+    "你相比于其他产品经理候选者有什么优势？",
+    "介绍一下你长期的职业规划",
     "能详细介绍一下在蔚来的实习经历吗？",
-    "为什么选择从机械工程转行做产品？"
+    "为什么选择从机械工程转行到物联网又到产品？"
   ];
 
   const isOffTopicQuestion = (text: string) => {
