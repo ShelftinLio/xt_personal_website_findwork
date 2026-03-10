@@ -107,40 +107,40 @@ const TERMINAL_DATA = {
     cmd: "lio --whoami",
     output: [
       { type: 'info', content: "Loading user profile... Done." },
-      { type: 'success', label: "ROLE", content: "Product Manager Intern (AI, Hardware & Mobility)" },
-      { type: 'text', content: "Passionate about defining the nature of products through ultimate quality." },
-      { type: 'warning', label: "FOCUS", content: ["AI Native", "3C Hardware", "Smart Mobility"] },
-      { type: 'dim', content: "Run specific modules below to see more..." }
+      { type: 'success', label: "ROLE", content: "产品经理实习生（AI / 硬件 / 智能出行）" },
+      { type: 'text', content: "追求极致的产品理想主义者，用技术深度定义产品的灵魂与体验。" },
+      { type: 'warning', label: "FOCUS", content: ["AI Native（原生 AI）", "3C 硬件", "智能出行"] },
+      { type: 'dim', content: "可运行下方模块查看更多..." }
     ]
   },
   ai: {
     cmd: "lio --module ai native",
     output: [
       { type: 'info', content: "Initializing AI Core... Connected." },
-      { type: 'success', label: "VISION", content: "Bridging LLMs with Real-World Utility" },
-      { type: 'text', content: "Exploring the paradigm shift from GUI to LUI (Language User Interface)." },
-      { type: 'warning', label: "STACK", content: ["Prompt Engineering", "RAG Systems", "Agentic Workflows"] },
-      { type: 'dim', content: "Ref: NIO AI Platform Experience" }
+      { type: 'success', label: "VISION", content: "让大模型真正服务真实业务与真实用户" },
+      { type: 'text', content: "关注交互范式从 GUI 走向 LUI（语言交互），让产品更自然、更高效。" },
+      { type: 'warning', label: "STACK", content: ["Prompt 工程", "RAG 系统", "Agent 工作流"] },
+      { type: 'dim', content: "Ref: 蔚来 AI 平台相关实践" }
     ]
   },
   hardware: {
     cmd: "lio --module 3c-hardware",
     output: [
       { type: 'info', content: "Scanning hardware specs... Done." },
-      { type: 'success', label: "DOMAIN", content: "Smartphones & Intelligent Wearables" },
-      { type: 'text', content: "Refusing mediocrity. Crafting hardware with soul and precision." },
-      { type: 'warning', label: "SKILLS", content: ["Market Insight", "Product Definition", "User Scenario"] },
-      { type: 'dim', content: "Ref: MEIZU Smartphone Dept" }
+      { type: 'success', label: "DOMAIN", content: "手机与智能穿戴（产品定义与体验打磨）" },
+      { type: 'text', content: "拒绝平庸，用细节与审美打磨硬件体验：从选型到定义，从方案到落地。" },
+      { type: 'warning', label: "SKILLS", content: ["竞品洞察", "产品定义", "用户场景"] },
+      { type: 'dim', content: "Ref: 魅族 手机事业部" }
     ]
   },
   mobility: {
     cmd: "lio --module smart-mobility",
     output: [
       { type: 'info', content: "Connecting to vehicle bus... Signal Strong." },
-      { type: 'success', label: "ACADEMIC", content: "Mechanical Engineering @ SWJTU" },
-      { type: 'text', content: "Integrating mechanical precision with intelligent cockpit experiences." },
-      { type: 'warning', label: "EXP", content: ["NIO Internship", "Smart Cockpit", "Vehicle Engineering"] },
-      { type: 'dim', content: "Ref: Various Vehicle-related Experiences" }
+      { type: 'success', label: "ACADEMIC", content: "机械工程背景（西南交通大学）" },
+      { type: 'text', content: "把工程严谨与产品体验结合：面向智能座舱与出行场景，追求可靠与好用。" },
+      { type: 'warning', label: "EXP", content: ["蔚来 实习经历", "智能座舱", "车辆工程"] },
+      { type: 'dim', content: "Ref: 多项车端相关实践与项目" }
     ]
   }
 };

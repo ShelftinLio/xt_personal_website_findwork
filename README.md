@@ -4,7 +4,7 @@ Welcome to my personal website repository. This project serves as an interactive
 
 It is built with a modern tech stack, emphasizing **Ultimate Quality** in both design and engineering.
 
-🔗 **Live Demo**: [https://xiaotianlio.cloud](https://xiaotianlio.cloud)
+🔗 **Live Demo**: [http://xiaotianlio.cloud](http://xiaotianlio.cloud)
 
 ![Lio Portfolio Preview](public/Lio.png)
 
